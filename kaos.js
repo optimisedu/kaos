@@ -1,3 +1,8 @@
+//TODO
+// 1. See how observers can be used to monitor mouse position and make changes
+// 2. anti-alias. this is a very resource heavy approach and there are a lot of performance improvements that can be made to this early version
+// 3. Create some nice canvas visual algorithms which affect params, frequency values, etc.
+
 const can = document.getElementById('can');
 const ctx = can.getContext('2d');
 can.width = window.innerWidth;
@@ -5,10 +10,11 @@ can.height = window.innerHeight;
 
 setInterval(draw, 1000 / 60);
 const audioCtx = new AudioContext();
-let osc = null; // Main oscillator
-let lfo = null; // Low-Frequency Oscillator
-let filter = null; // Lowpass filter
-let isPlaying = false; // Track whether the oscillator is playing
+let osc = null; 
+let lfo = null; 
+let filter = null; 
+let gain = null;
+let isPlaying = false;
 
 let mousePos = { x: 0, y: 0 };
 
@@ -48,8 +54,8 @@ can.addEventListener('click', () => {
         lfo.frequency.setValueAtTime(8, audioCtx.currentTime); // LFO frequency (2 Hz)
         
         // Create a gain node to control the depth of LFO modulation
-        const lfoGain = audioCtx.createGain();
-        lfoGain.gain.setValueAtTime(500, audioCtx.currentTime); // LFO modulation depth
+        gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(500, audioCtx.currentTime); // LFO modulation depth
 
         // Connect the LFO to the gain node
         lfo.connect(lfoGain);
