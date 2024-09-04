@@ -29,59 +29,93 @@ function mouseMove(e) {
             osc.type = 'square';
         } else if (mousePos.x <= 300 && mousePos.y > 300) {
             osc.type = 'triangle';
+        } else {const can = document.getElementById('can');
+const ctx = can.getContext('2d');
+can.width = window.innerWidth;
+can.height = window.innerHeight;
+
+setInterval(draw, 1000 / 60);
+const audioCtx = new AudioContext();
+let osc = null; 
+let lfo = null; 
+let filter = null; 
+let gain = null;
+let isPlaying = false; 
+
+let mousePos = { x: 0, y: 0 };
+
+function mouseMove(e) {
+    mousePos = { x: e.offsetX, y: e.offsetY };
+    console.log(mousePos);
+
+    if (osc) { 
+        if (mousePos.x <= 300 && mousePos.y <= 300) {
+            osc.type = 'sine';
+            lfo.type = 'sawtooth';
+            lfo.frequency.setValueAtTime(8, audioCtx.currentTime); 
+        } else if (mousePos.x > 300 && mousePos.y <= 300) {
+            osc.type = 'square';
+            lfo.type = 'sine';
+            lfo.frequency.setValueAtTime(6, audioCtx.currentTime); 
+        } else if (mousePos.x <= 300 && mousePos.y > 300) {
+            osc.type = 'triangle';
+            lfo.type = 'sine';
+            lfo.frequency.setValueAtTime(4, audioCtx.currentTime); 
         } else {
             osc.type = 'sawtooth';
+            lfo.type = 'square';
+            lfo.frequency.setValueAtTime(2, audioCtx.currentTime); 
         }
         console.log(osc);
     }
 }
 
-   osc = audioCtx.createOscillator();
-        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-
-        // Create the lowpass filter
-        filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(880, audioCtx.currentTime); // Initial cutoff frequency
-
-        // Create the LFO
-        lfo = audioCtx.createOscillator();
-        lfo.frequency.setValueAtTime(8, audioCtx.currentTime); 
-        
-
-        gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(500, audioCtx.currentTime); 
-
-        lfo.connect(lfoGain);
-        
-        lfoGain.connect(filter.frequency);
-
-        osc.connect(filter);
-
-        filter.connect(audioCtx.destination);
-
-
 can.addEventListener('mousemove', mouseMove);
 
 can.addEventListener('click', () => {
     if (!isPlaying) {
-        // Create the main oscillator
-     
+
+        osc = audioCtx.createOscillator();
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+
+        filter = audioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(990, audioCtx.currentTime);
+
+        lfo = audioCtx.createOscillator();
+
+
+         gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(500, audioCtx.currentTime);
+
+
+        lfo.connect(gain);
+        
+
+        gain.connect(filter.frequency);
+
+        osc.connect(filter);
+
+
+        filter.connect(audioCtx.destination);
+
+
         osc.start();
         lfo.start();
         
         isPlaying = true;
     } else {
-        // Stop the oscillator and the LFO
+
         osc.stop();
         lfo.stop();
 
-        // Disconnect everything
+  
         osc.disconnect();
         lfo.disconnect();
         filter.disconnect();
         
-        // Clear the references
+
         osc = null;
         lfo = null;
         filter = null;
@@ -97,3 +131,4 @@ function draw() {
     ctx.fill();
     ctx.closePath();
 }
+
