@@ -36,12 +36,7 @@ function mouseMove(e) {
     }
 }
 
-can.addEventListener('mousemove', mouseMove);
-
-can.addEventListener('click', () => {
-    if (!isPlaying) {
-        // Create the main oscillator
-        osc = audioCtx.createOscillator();
+   osc = audioCtx.createOscillator();
         osc.frequency.setValueAtTime(220, audioCtx.currentTime);
 
         // Create the lowpass filter
@@ -51,25 +46,27 @@ can.addEventListener('click', () => {
 
         // Create the LFO
         lfo = audioCtx.createOscillator();
-        lfo.frequency.setValueAtTime(8, audioCtx.currentTime); // LFO frequency (2 Hz)
+        lfo.frequency.setValueAtTime(8, audioCtx.currentTime); 
         
-        // Create a gain node to control the depth of LFO modulation
-        gain = audioCtx.createGain();
-        gain.gain.setValueAtTime(500, audioCtx.currentTime); // LFO modulation depth
 
-        // Connect the LFO to the gain node
+        gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(500, audioCtx.currentTime); 
+
         lfo.connect(lfoGain);
         
-        // Connect the gain node to the filter's frequency parameter
         lfoGain.connect(filter.frequency);
 
-        // Connect the main oscillator to the filter
         osc.connect(filter);
 
-        // Connect the filter to the destination (speakers)
         filter.connect(audioCtx.destination);
 
-        // Start the oscillator and the LFO
+
+can.addEventListener('mousemove', mouseMove);
+
+can.addEventListener('click', () => {
+    if (!isPlaying) {
+        // Create the main oscillator
+     
         osc.start();
         lfo.start();
         
