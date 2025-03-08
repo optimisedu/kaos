@@ -21,26 +21,7 @@ let mousePos = { x: 0, y: 0 };
 function mouseMove(e) {
     mousePos = { x: e.offsetX, y: e.offsetY };
     console.log(mousePos);
-
-    if (osc) { // Only update if the main oscillator exists
-        if (mousePos.x <= 300 && mousePos.y <= 300) {
-            osc.type = 'sine';
-        } else if (mousePos.x > 300 && mousePos.y <= 300) {
-            osc.type = 'square';
-        } else if (mousePos.x <= 300 && mousePos.y > 300) {
-            osc.type = 'triangle';
-        } else {const can = document.getElementById('can');
-const ctx = can.getContext('2d');
-can.width = window.innerWidth;
-can.height = window.innerHeight;
-
-setInterval(draw, 1000 / 60);
-const audioCtx = new AudioContext();
-let osc = null; 
-let lfo = null; 
-let filter = null; 
-let gain = null;
-let isPlaying = false; 
+}
 
 let mousePos = { x: 0, y: 0 };
 
